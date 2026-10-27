@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intellectual Omniverse - Thought & Writing Hub</title>
+    
+    <!-- SEO Meta Tags for Google Search -->
+    <meta name="description" content="Welcome to Intellectual Omniverse. A custom platform for essays, ideas, philosophy, and creative deep dives.">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Paste your Google Search Console verification tag here when ready -->
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 2rem 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        p.subtitle {
+            margin: 5px 0 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        main {
+            width: 90%;
+            max-width: 700px;
+            margin: 2rem 0;
+        }
+
+        .editor-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-bottom: 2rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-main);
+            font-size: 1rem;
+            box-sizing: border-box;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-post {
+            background: var(--accent);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            float: right;
+            transition: opacity 0.2s;
+        }
+
+        .btn-post:hover {
+            opacity: 0.9;
+        }
+
+        .posts-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .post-card {
+            background: var(--card-bg);
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .post-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>INTELLECTUAL OMNIVERSE</h1>
+        <p class="subtitle">A Universe of Ideas, Science & Philosophy</p>
+    </header>
+
+    <main>
+        <!-- Writing Area -->
+        <div class="editor-card">
+            <textarea id="postInput" placeholder="Write your thought, essay, or article here..."></textarea>
+            <button class="btn-post" onclick="publishPost()">Post Thought</button>
+            <div style="clear: both;"></div>
+        </div>
+
+        <!-- Feed Section -->
+        <h3 class="posts-header">Published Articles</h3>
+        <div id="feed"></div>
+    </main>
+
+    <script>
+        // Load saved posts on page startup
+        document.addEventListener("DOMContentLoaded", loadPosts);
+
+        function publishPost() {
+            const input = document.getElementById("postInput");
+            const text = input.value.trim();
+            if (!text) return;
+
+            const newPost = {
+                id: Date.now(),
+                content: text,
+                date: new Date().toLocaleString()
+            };
+
+            let posts = JSON.parse(localStorage.getItem("io_posts") || "[]");
+            posts.unshift(newPost);
+            localStorage.setItem("io_posts", JSON.stringify(posts));
+
+            input.value = "";
+            renderPosts(posts);
+        }
+
+        function loadPosts() {
+            const posts = JSON.parse(localStorage.getItem("io_posts") || "[]");
+            renderPosts(posts);
+        }
+
+        function renderPosts(posts) {
+            const feed = document.getElementById("feed");
+            if (posts.length === 0) {
+                feed.innerHTML = `<p style="color: var(--text-muted); text-align: center;">No thoughts posted yet. Write your first article above!</p>`;
+                return;
+            }
+
+            feed.innerHTML = posts.map(p => `
+                <div class="post-card">
+                    <div class="post-time">${p.date}</div>
+                    <div>${p.content.replace(/\n/g, '<br>')}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
